@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Home{% endblock %} | Mwananchi System</title>
+    <meta name="description" content="Mwananchi System — report community issues, track complaints and follow county budget spending.">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Type system: Space Grotesk (headings), Inter (body), IBM Plex Mono (data / report IDs) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<nav class="navbar navbar-expand-lg sticky-top mwn-navbar">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('main.home') }}">
+            <span class="mwn-brand-mark"><i class="fa-solid fa-flag"></i></span>
+            Mwananchi <span class="mwn-brand-accent">System</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMain">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+                <li class="nav-item"><a class="nav-link {% if request.endpoint == 'main.home' %}active{% endif %}" href="{{ url_for('main.home') }}">Home</a></li>
+                <li class="nav-item"><a class="nav-link {% if request.endpoint == 'main.submit_complaint' %}active{% endif %}" href="{{ url_for('main.submit_complaint') }}">Submit Complaint</a></li>
+                <li class="nav-item"><a class="nav-link {% if request.endpoint == 'main.track_complaint' %}active{% endif %}" href="{{ url_for('main.track_complaint') }}">Track Complaint</a></li>
+                <li class="nav-item"><a class="nav-link {% if request.endpoint == 'main.budget' %}active{% endif %}" href="{{ url_for('main.budget') }}">Budget Information</a></li>
+                {% if current_user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}" href="{{ url_for('admin.dashboard') }}"><i class="fa-solid fa-gauge me-1"></i>Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.logout') }}"><i class="fa-solid fa-right-from-bracket me-1"></i>Logout</a></li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link {% if request.endpoint == 'admin.login' %}active{% endif %}" href="{{ url_for('admin.login') }}">Admin Login</a></li>
+                {% endif %}
+                <li class="nav-item ms-lg-2">
+                    <button id="darkModeToggle" class="btn mwn-toggle-btn" type="button" aria-label="Toggle dark mode">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="flash-container container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category in ['error', 'danger'] else category }} alert-dismissible fade show shadow-sm" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<main id="main-content">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="mwn-footer mt-5">
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <h5 class="mwn-footer-brand"><i class="fa-solid fa-flag me-2"></i>Mwananchi System</h5>
+                <p class="small mb-0">A citizen engagement platform for reporting issues, tracking complaints, and following county development spending.</p>
+            </div>
+            <div class="col-md-4">
+                <h6>Contact Information</h6>
+                <p class="small mb-1"><i class="fa-solid fa-envelope me-2"></i>support@mwananchi.go.ke</p>
+                <p class="small mb-0"><i class="fa-solid fa-phone me-2"></i>+254 700 000 000</p>
+            </div>
+            <div class="col-md-4">
+                <h6>Legal</h6>
+                <p class="small mb-1"><a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a></p>
+                <p class="small mb-0">&copy; {{ current_year }} Mwananchi System. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body small">
+        <p>Mwananchi System collects only the information you choose to provide when submitting a complaint. Optional fields such as your name and phone number are used solely to help resolve your complaint and are never shared with third parties.</p>
+        <p>Report data and budget information are used to improve service delivery and increase transparency in county spending. For questions about your data, contact support@mwananchi.go.ke.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

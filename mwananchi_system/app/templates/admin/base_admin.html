@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid mwn-admin-wrapper">
+    <div class="row">
+        <aside class="col-lg-2 mwn-admin-sidebar">
+            <nav class="nav flex-column py-4">
+                <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}" href="{{ url_for('admin.dashboard') }}"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a>
+                <a class="nav-link {% if request.endpoint and request.endpoint.startswith('admin.complaints') %}active{% endif %}" href="{{ url_for('admin.complaints') }}"><i class="fa-solid fa-file-lines me-2"></i>Complaints</a>
+                <a class="nav-link {% if request.endpoint and 'budget' in request.endpoint %}active{% endif %}" href="{{ url_for('admin.budget_list') }}"><i class="fa-solid fa-coins me-2"></i>Budget Projects</a>
+                <hr class="my-3">
+                <a class="nav-link" href="{{ url_for('main.home') }}"><i class="fa-solid fa-arrow-left me-2"></i>Back to Site</a>
+            </nav>
+        </aside>
+        <section class="col-lg-10 py-4">
+            {% block admin_content %}{% endblock %}
+        </section>
+    </div>
+</div>
+{% endblock %}

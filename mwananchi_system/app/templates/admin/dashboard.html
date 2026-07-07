@@ -1,0 +1,79 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block admin_content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <h2 class="mwn-h2 mb-0"><i class="fa-solid fa-gauge mwn-icon-accent me-2"></i>Dashboard</h2>
+    <span class="text-muted">Welcome, {{ current_user.username }}</span>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="mwn-stat-card"><i class="fa-solid fa-file-lines"></i><h3>{{ total_complaints }}</h3><p>Total Complaints</p></div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="mwn-stat-card"><i class="fa-solid fa-hourglass-half"></i><h3>{{ pending_complaints }}</h3><p>Pending</p></div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="mwn-stat-card"><i class="fa-solid fa-circle-check"></i><h3>{{ resolved_complaints }}</h3><p>Resolved</p></div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="mwn-stat-card"><i class="fa-solid fa-coins"></i><h3>{{ total_projects }}</h3><p>Budget Projects</p></div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-5">
+        <div class="mwn-card p-4 h-100">
+            <h5 class="mb-3">Complaints by Status</h5>
+            <canvas id="statusChart" height="220" role="img" aria-label="Doughnut chart of complaints by status"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="mwn-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Recent Complaints</h5>
+                <a href="{{ url_for('admin.complaints') }}" class="mwn-link small">View all <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for c in recent_complaints %}
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <div>
+                        <div class="fw-semibold mwn-mono">{{ c.report_id }}</div>
+                        <div class="small text-muted">{{ c.category }}</div>
+                    </div>
+                    <span class="badge mwn-badge-status status-{{ c.status | status_slug }}">{{ c.status }}</span>
+                </li>
+                {% else %}
+                <li class="list-group-item px-0 text-muted">No complaints yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+    (function () {
+        var ctx = document.getElementById('statusChart');
+        if (!ctx || typeof Chart === 'undefined') return;
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: {{ status_counts.keys() | list | tojson }},
+                datasets: [{
+                    data: {{ status_counts.values() | list | tojson }},
+                    backgroundColor: ['#0E2A47', '#D99A1B', '#3D7EC2', '#1E7A4A', '#A6402F'],
+                    borderWidth: 0,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    })();
+</script>
+{% endblock %}

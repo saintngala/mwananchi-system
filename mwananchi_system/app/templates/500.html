@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Server Error{% endblock %}
+{% block content %}
+<div class="container my-5 text-center mwn-error-page">
+    <i class="fa-solid fa-triangle-exclamation mwn-error-icon"></i>
+    <h1 class="mwn-h1 mt-3">500</h1>
+    <p class="mwn-lead">Something went wrong on our end. Please try again shortly.</p>
+    <a href="{{ url_for('main.home') }}" class="btn mwn-btn-primary mt-3"><i class="fa-solid fa-house me-2"></i>Return Home</a>
+</div>
+{% endblock %}

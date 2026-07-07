@@ -1,0 +1,742 @@
+/* =============================================================================
+   Mwananchi System — stylesheet
+   ---------------------------------------------------------------------------
+   Design tokens live at the top as CSS custom properties so the light/dark
+   theme switch (toggled by adding data-bs-theme="dark" to <html> in
+   script.js) is just a matter of re-pointing variables — no duplicated
+   component rules.
+   ========================================================================== */
+
+:root {
+  /* --- Brand palette ------------------------------------------------- */
+  --mwn-ink: #0e2a47;          /* deep civic navy — headings, primary actions */
+  --mwn-ink-2: #123a61;        /* lighter navy for gradients / hover states */
+  --mwn-green: #1e7a4a;        /* savanna green — secondary actions, resolved */
+  --mwn-green-dark: #15603a;
+  --mwn-gold: #d99a1b;         /* sunrise gold — signature accent, used sparingly */
+  --mwn-gold-dark: #b57f12;
+  --mwn-clay: #a6402f;         /* muted brick red — danger / rejected states */
+  --mwn-clay-dark: #8a3226;
+
+  /* --- Surfaces & text (light mode defaults) -------------------------- */
+  --mwn-bg: #f5f6f3;
+  --mwn-surface: #ffffff;
+  --mwn-surface-alt: #eef1f4;
+  --mwn-text: #17232f;
+  --mwn-text-muted: #55636f;
+  --mwn-border: #e1e6ea;
+  --mwn-shadow: 0 10px 30px rgba(14, 42, 71, 0.08);
+  --mwn-shadow-sm: 0 4px 14px rgba(14, 42, 71, 0.06);
+
+  /* --- Layout ------------------------------------------------------- */
+  --mwn-radius: 14px;
+  --mwn-radius-sm: 8px;
+
+  /* --- Fonts ---------------------------------------------------------- */
+  --mwn-font-display: 'Space Grotesk', 'Segoe UI', sans-serif;
+  --mwn-font-body: 'Inter', 'Segoe UI', sans-serif;
+  --mwn-font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+}
+
+[data-bs-theme="dark"] {
+  --mwn-bg: #0a1420;
+  --mwn-surface: #12202f;
+  --mwn-surface-alt: #182a3c;
+  --mwn-text: #e7edf5;
+  --mwn-text-muted: #9db0c3;
+  --mwn-border: #223447;
+  --mwn-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --mwn-shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.35);
+  --mwn-gold: #eab53a;
+  --mwn-green: #2f9663;
+}
+
+/* =============================================================================
+   Base
+   ========================================================================== */
+
+body {
+  font-family: var(--mwn-font-body);
+  background-color: var(--mwn-bg);
+  color: var(--mwn-text);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--mwn-font-display);
+  color: var(--mwn-text);
+  font-weight: 700;
+}
+
+a {
+  color: var(--mwn-ink);
+}
+[data-bs-theme="dark"] a {
+  color: #9cc4f0;
+}
+
+.mwn-mono {
+  font-family: var(--mwn-font-mono);
+  letter-spacing: 0.02em;
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--mwn-ink);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  z-index: 2000;
+  border-radius: 0 0 8px 0;
+}
+.skip-link:focus {
+  left: 0;
+}
+
+/* Visible keyboard focus everywhere */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.btn:focus-visible {
+  outline: 3px solid var(--mwn-gold);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =============================================================================
+   Navbar
+   ========================================================================== */
+
+.mwn-navbar {
+  background-color: var(--mwn-surface);
+  border-bottom: 1px solid var(--mwn-border);
+  box-shadow: var(--mwn-shadow-sm);
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+}
+
+.navbar-brand {
+  font-family: var(--mwn-font-display);
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: var(--mwn-ink) !important;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+[data-bs-theme="dark"] .navbar-brand {
+  color: var(--mwn-text) !important;
+}
+
+.mwn-brand-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--mwn-ink), var(--mwn-green));
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+}
+
+.mwn-brand-accent {
+  color: var(--mwn-green);
+}
+
+.navbar-nav .nav-link {
+  color: var(--mwn-text);
+  font-weight: 500;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--mwn-radius-sm);
+}
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link:hover {
+  color: var(--mwn-ink);
+  background-color: var(--mwn-surface-alt);
+}
+[data-bs-theme="dark"] .navbar-nav .nav-link.active,
+[data-bs-theme="dark"] .navbar-nav .nav-link:hover {
+  color: #fff;
+}
+
+.mwn-toggle-btn {
+  border: 1px solid var(--mwn-border);
+  background: var(--mwn-surface-alt);
+  color: var(--mwn-text);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.mwn-toggle-btn:hover {
+  border-color: var(--mwn-gold);
+  color: var(--mwn-gold-dark);
+}
+
+/* =============================================================================
+   Buttons
+   ========================================================================== */
+
+.mwn-btn-primary {
+  background-color: var(--mwn-ink);
+  border-color: var(--mwn-ink);
+  color: #fff;
+  font-weight: 600;
+  border-radius: var(--mwn-radius-sm);
+  padding-inline: 1.25rem;
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+.mwn-btn-primary:hover,
+.mwn-btn-primary:focus {
+  background-color: var(--mwn-ink-2);
+  border-color: var(--mwn-ink-2);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: var(--mwn-shadow-sm);
+}
+
+.mwn-btn-outline {
+  background-color: transparent;
+  border: 1.5px solid var(--mwn-ink);
+  color: var(--mwn-ink);
+  font-weight: 600;
+  border-radius: var(--mwn-radius-sm);
+  padding-inline: 1.25rem;
+  transition: all 0.15s ease;
+}
+.mwn-btn-outline:hover {
+  background-color: var(--mwn-ink);
+  color: #fff;
+}
+[data-bs-theme="dark"] .mwn-btn-outline {
+  border-color: var(--mwn-border);
+  color: var(--mwn-text);
+}
+[data-bs-theme="dark"] .mwn-btn-outline:hover {
+  background-color: var(--mwn-surface-alt);
+  color: #fff;
+  border-color: var(--mwn-gold);
+}
+
+.mwn-btn-ghost {
+  background: transparent;
+  border: 1.5px dashed var(--mwn-border);
+  color: var(--mwn-text-muted);
+  font-weight: 600;
+  border-radius: var(--mwn-radius-sm);
+  padding-inline: 1.25rem;
+}
+.mwn-btn-ghost:hover {
+  border-color: var(--mwn-green);
+  color: var(--mwn-green);
+}
+
+.mwn-btn-danger {
+  background-color: transparent;
+  border: 1.5px solid var(--mwn-clay);
+  color: var(--mwn-clay);
+  border-radius: var(--mwn-radius-sm);
+}
+.mwn-btn-danger:hover {
+  background-color: var(--mwn-clay);
+  color: #fff;
+}
+
+.mwn-link {
+  color: var(--mwn-ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+.mwn-link i {
+  transition: transform 0.15s ease;
+  display: inline-block;
+}
+.mwn-link:hover i {
+  transform: translateX(3px);
+}
+[data-bs-theme="dark"] .mwn-link {
+  color: #9cc4f0;
+}
+
+/* =============================================================================
+   Typography helpers
+   ========================================================================== */
+
+.mwn-h1 {
+  font-size: clamp(2rem, 4vw, 2.85rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.mwn-h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  letter-spacing: -0.01em;
+}
+.mwn-lead {
+  font-size: 1.15rem;
+  color: var(--mwn-text-muted);
+  max-width: 46ch;
+}
+.mwn-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mwn-green);
+  background: rgba(30, 122, 74, 0.1);
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+}
+.mwn-icon-accent {
+  color: var(--mwn-green);
+}
+
+/* =============================================================================
+   Hero + signature "ticket stub" report-ID card
+   ========================================================================== */
+
+.mwn-hero {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(217, 154, 27, 0.12), transparent 45%),
+    linear-gradient(180deg, var(--mwn-surface-alt), var(--mwn-bg));
+  border-bottom: 1px solid var(--mwn-border);
+}
+
+.mwn-stub-card {
+  position: relative;
+  background: var(--mwn-surface);
+  border: 1.5px dashed var(--mwn-border);
+  border-radius: var(--mwn-radius);
+  padding: 2rem 1.75rem;
+  box-shadow: var(--mwn-shadow);
+  max-width: 380px;
+  margin-left: auto;
+}
+.mwn-stub-card-solo {
+  margin: 0 auto;
+}
+.mwn-stub-notch {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 24px;
+  background: var(--mwn-bg);
+  border: 1.5px dashed var(--mwn-border);
+  border-radius: 50%;
+}
+.mwn-stub-notch-bottom {
+  top: auto;
+  bottom: -12px;
+}
+.mwn-stub-label {
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--mwn-text-muted);
+  margin-bottom: 0.35rem;
+  text-align: center;
+}
+.mwn-stub-id {
+  font-family: var(--mwn-font-mono);
+  font-weight: 600;
+  font-size: 1.5rem;
+  text-align: center;
+  color: var(--mwn-ink);
+  letter-spacing: 0.02em;
+  margin-bottom: 1rem;
+  word-break: break-all;
+}
+[data-bs-theme="dark"] .mwn-stub-id {
+  color: var(--mwn-gold);
+}
+.mwn-stub-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  padding: 0.4rem 0;
+  border-top: 1px dashed var(--mwn-border);
+}
+.mwn-stub-row span:first-child {
+  color: var(--mwn-text-muted);
+}
+
+/* =============================================================================
+   Stat / info cards
+   ========================================================================== */
+
+.mwn-stat-card {
+  background: var(--mwn-surface);
+  border: 1px solid var(--mwn-border);
+  border-radius: var(--mwn-radius);
+  padding: 1.75rem 1.25rem;
+  height: 100%;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mwn-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--mwn-shadow-sm);
+}
+.mwn-stat-card i {
+  font-size: 1.5rem;
+  color: var(--mwn-green);
+  margin-bottom: 0.5rem;
+}
+.mwn-stat-card h3,
+.mwn-stat-number {
+  font-family: var(--mwn-font-mono);
+  font-size: 2rem;
+  margin-bottom: 0.15rem;
+}
+.mwn-stat-card p {
+  color: var(--mwn-text-muted);
+  margin-bottom: 0;
+  font-size: 0.92rem;
+}
+
+.mwn-info-card {
+  background: var(--mwn-surface);
+  border: 1px solid var(--mwn-border);
+  border-radius: var(--mwn-radius);
+  padding: 2rem 1.5rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mwn-info-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--mwn-shadow);
+}
+.mwn-info-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(14, 42, 71, 0.08);
+  color: var(--mwn-ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+[data-bs-theme="dark"] .mwn-info-icon {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--mwn-gold);
+}
+.mwn-info-card p {
+  color: var(--mwn-text-muted);
+}
+
+/* =============================================================================
+   Generic cards / forms
+   ========================================================================== */
+
+.mwn-card {
+  background: var(--mwn-surface);
+  border: 1px solid var(--mwn-border);
+  border-radius: var(--mwn-radius);
+  box-shadow: var(--mwn-shadow-sm);
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.form-control,
+.form-select {
+  background-color: var(--mwn-surface);
+  border: 1px solid var(--mwn-border);
+  color: var(--mwn-text);
+  border-radius: var(--mwn-radius-sm);
+  padding: 0.6rem 0.85rem;
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--mwn-ink);
+  box-shadow: 0 0 0 0.2rem rgba(14, 42, 71, 0.12);
+  background-color: var(--mwn-surface);
+  color: var(--mwn-text);
+}
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select {
+  color: var(--mwn-text);
+}
+[data-bs-theme="dark"] .form-control::placeholder {
+  color: #6d8299;
+}
+
+/* =============================================================================
+   Status badges
+   ========================================================================== */
+
+.mwn-badge-status {
+  font-weight: 600;
+  font-size: 0.78rem;
+  padding: 0.4em 0.75em;
+  border-radius: 999px;
+}
+.status-submitted        { background: rgba(61, 126, 194, 0.15); color: #2b5f8f; }
+.status-under-review     { background: rgba(217, 154, 27, 0.18); color: var(--mwn-gold-dark); }
+.status-in-progress      { background: rgba(61, 126, 194, 0.18); color: #2b5f8f; }
+.status-resolved         { background: rgba(30, 122, 74, 0.16);  color: var(--mwn-green-dark); }
+.status-rejected         { background: rgba(166, 64, 47, 0.15);  color: var(--mwn-clay-dark); }
+.status-not-started      { background: rgba(85, 99, 111, 0.15);  color: var(--mwn-text-muted); }
+.status-ongoing          { background: rgba(61, 126, 194, 0.18); color: #2b5f8f; }
+.status-completed        { background: rgba(30, 122, 74, 0.16);  color: var(--mwn-green-dark); }
+.status-delayed          { background: rgba(217, 154, 27, 0.18); color: var(--mwn-gold-dark); }
+.status-stalled          { background: rgba(166, 64, 47, 0.15);  color: var(--mwn-clay-dark); }
+
+[data-bs-theme="dark"] .mwn-badge-status {
+  filter: brightness(1.3);
+}
+
+/* =============================================================================
+   Report success page
+   ========================================================================== */
+
+.mwn-success-icon {
+  font-size: 3rem;
+  color: var(--mwn-green);
+}
+.mwn-summary {
+  background: var(--mwn-surface-alt);
+  border-radius: var(--mwn-radius-sm);
+  padding: 1.25rem;
+}
+
+/* =============================================================================
+   Track complaint — progress steps
+   ========================================================================== */
+
+.mwn-track-result {
+  border-top: 1px solid var(--mwn-border);
+  padding-top: 1.5rem;
+}
+
+.mwn-progress-track {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+.mwn-progress-track::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background: var(--mwn-border);
+  z-index: 0;
+}
+.mwn-progress-step {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--mwn-text-muted);
+}
+.mwn-progress-step .dot {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--mwn-surface);
+  border: 2px solid var(--mwn-border);
+  margin: 0 auto 0.4rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.mwn-progress-step.done .dot {
+  background: var(--mwn-green);
+  border-color: var(--mwn-green);
+}
+.mwn-progress-step.done .label {
+  color: var(--mwn-green-dark);
+  font-weight: 600;
+}
+[data-bs-theme="dark"] .mwn-progress-step.done .label {
+  color: var(--mwn-green);
+}
+
+/* =============================================================================
+   Tables
+   ========================================================================== */
+
+.mwn-table {
+  --bs-table-bg: transparent;
+  color: var(--mwn-text);
+}
+.mwn-table thead th {
+  border-bottom: 2px solid var(--mwn-border);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--mwn-text-muted);
+  white-space: nowrap;
+}
+.mwn-table td, .mwn-table th {
+  border-color: var(--mwn-border);
+  vertical-align: middle;
+}
+.mwn-sort-link {
+  color: inherit;
+  text-decoration: none;
+}
+.mwn-sort-link:hover {
+  color: var(--mwn-ink);
+}
+[data-bs-theme="dark"] .mwn-sort-link:hover {
+  color: var(--mwn-gold);
+}
+
+.mwn-progress {
+  height: 8px;
+  background-color: var(--mwn-surface-alt);
+}
+.mwn-progress .progress-bar {
+  background-color: var(--mwn-green);
+}
+
+/* =============================================================================
+   Admin layout
+   ========================================================================== */
+
+.mwn-admin-wrapper {
+  padding: 0;
+}
+.mwn-admin-sidebar {
+  background: var(--mwn-surface);
+  border-right: 1px solid var(--mwn-border);
+  min-height: calc(100vh - 200px);
+}
+.mwn-admin-sidebar .nav-link {
+  color: var(--mwn-text-muted);
+  font-weight: 500;
+  padding: 0.65rem 1rem;
+  border-radius: var(--mwn-radius-sm);
+  margin-bottom: 0.15rem;
+}
+.mwn-admin-sidebar .nav-link:hover {
+  background: var(--mwn-surface-alt);
+  color: var(--mwn-text);
+}
+.mwn-admin-sidebar .nav-link.active {
+  background: var(--mwn-ink);
+  color: #fff;
+}
+
+.mwn-login-icon {
+  font-size: 2.75rem;
+  color: var(--mwn-ink);
+}
+[data-bs-theme="dark"] .mwn-login-icon {
+  color: var(--mwn-gold);
+}
+
+/* =============================================================================
+   Footer
+   ========================================================================== */
+
+.mwn-footer {
+  background: var(--mwn-ink);
+  color: rgba(255, 255, 255, 0.85);
+}
+.mwn-footer h5, .mwn-footer h6 {
+  color: #fff;
+}
+.mwn-footer-brand {
+  font-family: var(--mwn-font-display);
+}
+.mwn-footer a {
+  color: rgba(255, 255, 255, 0.85);
+}
+.mwn-footer a:hover {
+  color: var(--mwn-gold);
+}
+
+/* =============================================================================
+   Error pages
+   ========================================================================== */
+
+.mwn-error-page {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+.mwn-error-icon {
+  font-size: 3.5rem;
+  color: var(--mwn-gold);
+}
+
+/* =============================================================================
+   Print — complaint receipt & budget report
+   ========================================================================== */
+
+.mwn-print-body {
+  background: var(--mwn-bg);
+  font-family: var(--mwn-font-body);
+}
+.mwn-receipt {
+  max-width: 640px;
+  background: var(--mwn-surface);
+  border: 1px solid var(--mwn-border);
+  border-radius: var(--mwn-radius);
+  padding: 2.5rem;
+  box-shadow: var(--mwn-shadow);
+}
+
+@media print {
+  .mwn-navbar, .mwn-footer, .flash-container, .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+  .mwn-receipt {
+    box-shadow: none;
+    border: none;
+  }
+}
+
+/* =============================================================================
+   Responsive tweaks
+   ========================================================================== */
+
+@media (max-width: 991.98px) {
+  .mwn-stub-card {
+    margin: 0 auto;
+  }
+  .mwn-admin-sidebar {
+    min-height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--mwn-border);
+  }
+  .mwn-admin-sidebar .nav {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    padding: 1rem !important;
+  }
+  .mwn-admin-sidebar hr {
+    display: none;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .mwn-h1 { font-size: 1.85rem; }
+  .mwn-card { border-radius: var(--mwn-radius-sm); }
+}

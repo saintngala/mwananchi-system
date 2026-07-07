@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<header class="mwn-hero">
+    <div class="container py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <span class="mwn-eyebrow"><i class="fa-solid fa-circle-check me-1"></i> Serving citizens across all 47 counties</span>
+                <h1 class="mwn-h1 mt-3 mb-3">Your voice, your county, your Mwananchi System.</h1>
+                <p class="mwn-lead mb-4">Report community issues, track their progress with a real Report ID, and see exactly how your county is spending development funds — all in one place.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{{ url_for('main.submit_complaint') }}" class="btn mwn-btn-primary btn-lg"><i class="fa-solid fa-bullhorn me-2"></i>Submit Complaint</a>
+                    <a href="{{ url_for('main.track_complaint') }}" class="btn mwn-btn-outline btn-lg"><i class="fa-solid fa-magnifying-glass me-2"></i>Track Complaint</a>
+                    <a href="{{ url_for('main.budget') }}" class="btn mwn-btn-outline btn-lg"><i class="fa-solid fa-coins me-2"></i>View Budget</a>
+                    <a href="{{ url_for('admin.login') }}" class="btn mwn-btn-ghost btn-lg"><i class="fa-solid fa-user-shield me-2"></i>Admin Login</a>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="mwn-stub-card">
+                    <div class="mwn-stub-notch"></div>
+                    <p class="mwn-stub-label">Sample report</p>
+                    <p class="mwn-stub-id">MWN-{{ current_year }}-000482</p>
+                    <div class="mwn-stub-row"><span>Category</span><span>Roads &amp; Infrastructure</span></div>
+                    <div class="mwn-stub-row"><span>Status</span><span class="badge mwn-badge-status status-in-progress">In Progress</span></div>
+                    <div class="mwn-stub-notch mwn-stub-notch-bottom"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="container my-5">
+    <div class="row g-4 text-center">
+        <div class="col-6 col-lg-3">
+            <div class="mwn-stat-card">
+                <i class="fa-solid fa-file-circle-check"></i>
+                <h3 class="mwn-stat-number" data-count="{{ stats.total_complaints }}">0</h3>
+                <p>Complaints Logged</p>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="mwn-stat-card">
+                <i class="fa-solid fa-thumbs-up"></i>
+                <h3 class="mwn-stat-number" data-count="{{ stats.resolved_complaints }}">0</h3>
+                <p>Complaints Resolved</p>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="mwn-stat-card">
+                <i class="fa-solid fa-diagram-project"></i>
+                <h3 class="mwn-stat-number" data-count="{{ stats.total_projects }}">0</h3>
+                <p>Budget Projects Tracked</p>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="mwn-stat-card">
+                <i class="fa-solid fa-sack-dollar"></i>
+                <h3 class="mwn-stat-number" data-count="{{ stats.total_allocated | int }}" data-prefix="KES ">0</h3>
+                <p>Total Allocated Budget</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container my-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="mwn-info-card h-100">
+                <div class="mwn-info-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                <h5>Report an Issue</h5>
+                <p>Tell us about problems in your community — from broken infrastructure to service delivery gaps.</p>
+                <a href="{{ url_for('main.submit_complaint') }}" class="mwn-link">Submit a complaint <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="mwn-info-card h-100">
+                <div class="mwn-info-icon"><i class="fa-solid fa-route"></i></div>
+                <h5>Track Progress</h5>
+                <p>Use your unique Report ID to check the current status of any complaint you've submitted.</p>
+                <a href="{{ url_for('main.track_complaint') }}" class="mwn-link">Track a complaint <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="mwn-info-card h-100">
+                <div class="mwn-info-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                <h5>Follow the Budget</h5>
+                <p>Explore county development projects, budget allocations, and spending progress near you.</p>
+                <a href="{{ url_for('main.budget') }}" class="mwn-link">View budget information <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

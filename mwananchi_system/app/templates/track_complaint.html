@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Track Complaint{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="mwn-card p-4 p-md-5">
+                <h2 class="mwn-h2 mb-1"><i class="fa-solid fa-magnifying-glass mwn-icon-accent me-2"></i>Track Your Complaint</h2>
+                <p class="text-muted mb-4">Enter the Report ID you received when you submitted your complaint.</p>
+
+                <form method="POST" novalidate class="d-flex flex-column flex-sm-row gap-2 mb-4">
+                    {{ form.hidden_tag() }}
+                    <div class="flex-grow-1">
+                        {{ form.report_id(class="form-control form-control-lg" + (" is-invalid" if form.report_id.errors else ""), placeholder="e.g. MWN-2026-000001") }}
+                        {% for error in form.report_id.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                    </div>
+                    {{ form.submit(class="btn mwn-btn-primary btn-lg") }}
+                </form>
+
+                {% if searched %}
+                    {% if complaint %}
+                    <div class="mwn-track-result">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0 mwn-mono">{{ complaint.report_id }}</h5>
+                            <span class="badge mwn-badge-status status-{{ complaint.status | status_slug }}">{{ complaint.status }}</span>
+                        </div>
+
+                        {% if complaint.status != 'Rejected' %}
+                        <div class="mwn-progress-track mb-4">
+                            {% for step in status_steps %}
+                            <div class="mwn-progress-step {% if loop.index0 <= status_index %}done{% endif %}">
+                                <span class="dot"></span><span class="label">{{ step }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="alert alert-secondary">
+                            <i class="fa-solid fa-circle-xmark me-2"></i>This complaint was reviewed and marked as <strong>Rejected</strong>.
+                        </div>
+                        {% endif %}
+
+                        <p><strong>Category:</strong> {{ complaint.category }}</p>
+                        <p><strong>Description:</strong> {{ complaint.description }}</p>
+                        <p><strong>Date Submitted:</strong> {{ complaint.date_submitted.strftime('%d %b %Y, %H:%M') }}</p>
+                        <a href="{{ url_for('main.complaint_receipt', report_id=complaint.report_id) }}" class="btn mwn-btn-outline btn-sm" target="_blank" rel="noopener"><i class="fa-solid fa-print me-2"></i>Print Receipt</a>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning mb-0"><i class="fa-solid fa-triangle-exclamation me-2"></i>No complaint found.</div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

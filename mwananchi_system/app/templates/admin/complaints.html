@@ -1,0 +1,124 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Manage Complaints{% endblock %}
+{% block admin_content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <h2 class="mwn-h2 mb-0"><i class="fa-solid fa-file-lines mwn-icon-accent me-2"></i>Complaints</h2>
+    <a href="{{ url_for('admin.export_complaints') }}" class="btn mwn-btn-outline"><i class="fa-solid fa-file-csv me-2"></i>Export CSV</a>
+</div>
+
+<form method="GET" class="row g-2 mb-4">
+    <div class="col-md-6">
+        <input type="text" name="search" value="{{ search }}" class="form-control" placeholder="Search by Report ID, category, name or location...">
+    </div>
+    <div class="col-md-3">
+        <select name="status" class="form-select">
+            <option value="">All Statuses</option>
+            {% for s in statuses %}
+            <option value="{{ s }}" {% if status_filter == s %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+        <button class="btn mwn-btn-primary flex-fill" type="submit">Filter</button>
+        {% if search or status_filter %}<a href="{{ url_for('admin.complaints') }}" class="btn mwn-btn-outline">Clear</a>{% endif %}
+    </div>
+</form>
+
+<div class="table-responsive mwn-card p-0">
+    <table class="table table-hover align-middle mb-0 mwn-table">
+        <thead>
+            <tr>
+                <th>Report ID</th><th>Category</th><th>Location</th><th>Submitted</th><th>Status</th><th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in complaints %}
+            <tr>
+                <td class="fw-semibold mwn-mono">{{ c.report_id }}</td>
+                <td>{{ c.category }}</td>
+                <td>{{ c.location or '—' }}</td>
+                <td>{{ c.date_submitted.strftime('%d %b %Y') }}</td>
+                <td><span class="badge mwn-badge-status status-{{ c.status | status_slug }}">{{ c.status }}</span></td>
+                <td>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm mwn-btn-outline" data-bs-toggle="modal" data-bs-target="#viewModal{{ c.id }}" title="View details"><i class="fa-solid fa-eye"></i></button>
+                        <button type="button" class="btn btn-sm mwn-btn-outline" data-bs-toggle="modal" data-bs-target="#statusModal{{ c.id }}" title="Update status"><i class="fa-solid fa-pen"></i></button>
+                        <form method="POST" action="{{ url_for('admin.delete_complaint', complaint_id=c.id) }}" data-confirm="Delete complaint {{ c.report_id }}? This cannot be undone.">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-sm mwn-btn-danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+
+            <div class="modal fade" id="viewModal{{ c.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title mwn-mono">{{ c.report_id }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Category:</strong> {{ c.category }}</p>
+                            <p><strong>Description:</strong> {{ c.description }}</p>
+                            <p><strong>Location:</strong> {{ c.location or 'Not provided' }}</p>
+                            <p><strong>Citizen Name:</strong> {{ c.citizen_name or 'Not provided' }}</p>
+                            <p><strong>Phone Number:</strong> {{ c.phone_number or 'Not provided' }}</p>
+                            <p class="mb-0"><strong>Submitted:</strong> {{ c.date_submitted.strftime('%d %b %Y, %H:%M') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="statusModal{{ c.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form method="POST" action="{{ url_for('admin.update_complaint_status', complaint_id=c.id) }}">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Update Status — <span class="mwn-mono">{{ c.report_id }}</span></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                {{ status_form.hidden_tag() }}
+                                <select name="status" class="form-select">
+                                    {% for s in statuses %}
+                                    <option value="{{ s }}" {% if s == c.status %}selected{% endif %}>{{ s }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn mwn-btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <tr><td colspan="6" class="text-center py-4 text-muted">No complaints found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if pagination.pages > 1 %}
+<nav class="mt-4" aria-label="Complaints pagination">
+    <ul class="pagination justify-content-center">
+        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for('admin.complaints', search=search, status=status_filter, page=pagination.prev_num) }}">Previous</a>
+        </li>
+        {% for num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if num %}
+            <li class="page-item {% if num == pagination.page %}active{% endif %}">
+                <a class="page-link" href="{{ url_for('admin.complaints', search=search, status=status_filter, page=num) }}">{{ num }}</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+            {% endif %}
+        {% endfor %}
+        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for('admin.complaints', search=search, status=status_filter, page=pagination.next_num) }}">Next</a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

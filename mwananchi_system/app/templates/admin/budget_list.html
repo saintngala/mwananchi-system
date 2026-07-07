@@ -1,0 +1,43 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Manage Budget Projects{% endblock %}
+{% block admin_content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <h2 class="mwn-h2 mb-0"><i class="fa-solid fa-coins mwn-icon-accent me-2"></i>Budget Projects</h2>
+    <a href="{{ url_for('admin.add_budget') }}" class="btn mwn-btn-primary"><i class="fa-solid fa-plus me-2"></i>Add Project</a>
+</div>
+
+<div class="table-responsive mwn-card p-0">
+    <table class="table table-hover align-middle mb-0 mwn-table">
+        <thead>
+            <tr><th>Project</th><th>County</th><th>FY</th><th>Allocated</th><th>Spent</th><th>Progress</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+            {% for p in projects %}
+            <tr>
+                <td>
+                    <div class="fw-semibold">{{ p.project_name }}</div>
+                    <div class="small text-muted">{{ p.ward }}</div>
+                </td>
+                <td>{{ p.county }}</td>
+                <td>{{ p.financial_year }}</td>
+                <td class="mwn-mono">KES {{ '{:,.0f}'.format(p.allocated_budget) }}</td>
+                <td class="mwn-mono">KES {{ '{:,.0f}'.format(p.amount_spent) }}</td>
+                <td class="mwn-mono">{{ p.progress_percentage }}%</td>
+                <td><span class="badge mwn-badge-status status-{{ p.project_status | status_slug }}">{{ p.project_status }}</span></td>
+                <td>
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('admin.edit_budget', project_id=p.id) }}" class="btn btn-sm mwn-btn-outline" title="Edit"><i class="fa-solid fa-pen"></i></a>
+                        <form method="POST" action="{{ url_for('admin.delete_budget', project_id=p.id) }}" data-confirm="Delete project &quot;{{ p.project_name }}&quot;? This cannot be undone.">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-sm mwn-btn-danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" class="text-center py-4 text-muted">No budget projects yet. <a href="{{ url_for('admin.add_budget') }}">Add the first one</a>.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

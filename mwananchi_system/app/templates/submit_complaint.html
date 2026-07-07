@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Submit Complaint{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="mwn-card p-4 p-md-5">
+                <h2 class="mwn-h2 mb-1"><i class="fa-solid fa-bullhorn mwn-icon-accent me-2"></i>Submit a Complaint</h2>
+                <p class="text-muted mb-4">Fields marked <span class="text-danger">*</span> are required. You'll receive a unique Report ID once submitted.</p>
+
+                <form method="POST" novalidate id="complaintForm">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        {{ form.category.label(class="form-label") }} <span class="text-danger">*</span>
+                        {{ form.category(class="form-select" + (" is-invalid" if form.category.errors else "")) }}
+                        {% for error in form.category.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label") }} <span class="text-danger">*</span>
+                        {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), rows="4", placeholder="Describe the issue in detail...") }}
+                        {% for error in form.description.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                        <div class="form-text">Minimum 10 characters. Please include any details that would help county staff act on this.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.location.label(class="form-label") }}
+                        {{ form.location(class="form-control" + (" is-invalid" if form.location.errors else ""), placeholder="e.g. Kibera, Nairobi") }}
+                        {% for error in form.location.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.citizen_name.label(class="form-label") }}
+                            {{ form.citizen_name(class="form-control" + (" is-invalid" if form.citizen_name.errors else ""), placeholder="Optional") }}
+                            {% for error in form.citizen_name.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.phone_number.label(class="form-label") }}
+                            {{ form.phone_number(class="form-control" + (" is-invalid" if form.phone_number.errors else ""), placeholder="e.g. 0712345678") }}
+                            {% for error in form.phone_number.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                            <div class="form-text">Optional — only used if we need to follow up with you.</div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        {{ form.submit(class="btn mwn-btn-primary btn-lg", id="submitBtn") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
