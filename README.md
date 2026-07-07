@@ -32,8 +32,8 @@ A Flask-based web application that promotes civic engagement by enabling citizen
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/mwananchi-system.git
-cd wananchi-system
+git clone https://github.com/saintngala/mwananchi-system.git
+cd mwananchi-system
 ```
 
 2. Create a virtual environment:
